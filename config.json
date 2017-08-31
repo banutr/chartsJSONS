@@ -1,0 +1,148 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "width": 400,
+  "height": 400,
+  "padding":5,
+ "data": [
+    
+ {
+      "name": "table",
+      "values": [
+        {"id": 1, "y": 15, "z": 4,"clr":"#F3B3EB "},{"id": 1, "y": 6 ,"z": 4,"clr":"#E148CF "},
+        {"id": 2, "y": 3, "z": 4,"clr":"#FBC2C8 "},{"id": 2, "y": 2, "z": 4,"clr":"#F46D7A "},
+        {"id": 3, "y": 4, "z": 4,"clr":"#FFD9C5 "},{"id": 3, "y": 3, "z": 4,"clr":"#FFA473 "},
+        {"id": 4, "y": 9, "z": 4,"clr":"#B3C9C6 "},{"id": 4, "y": 4, "z": 4,"clr":"#487E75 "},
+        {"id": 5, "y": 9, "z": 4,"clr":"#B9E9D6 "},{"id": 5, "y": 6, "z": 4,"clr":"#56CB9D "},
+        {"id": 6, "y": 5, "z": 4,"clr":"#BCE0FB "},{"id": 6, "y": 4, "z": 4,"clr":"#5EB4F6 "}
+      ],
+      "transform": [{"type": "pie","field": "z"}
+      ]
+    },
+    {
+      "name": "circles",
+      "values": [{"id": 50}, {"id":100}, {"id":150}, {"id":200}]
+    }
+  ],
+
+ "signals": [
+    {
+      "name": "baseColor",
+      "value": ["red","pink"]
+      
+   }
+  ],
+
+"scales": [
+    {
+      "name": "xscale",
+      "type": "band",
+      
+    "domain": {"data": "circles", "field": "id"},
+      "range":  [20,200]
+    
+      
+   },
+    {
+      "name": "r",
+      "type": "sqrt",
+      
+    "domain": {"data": "table", "field": "y"},
+      
+    "range": [20,200]
+    },
+  
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {"data": "table", "field": "z"},
+    
+     "range": ["red", "blue","black", "gray","yellow", "#f33","#33f", "#f33","#33f", "#f33","#33f", "#f33","#33f", "#f33"]
+    }
+
+],
+  
+
+"marks": [
+    {
+      "type": "arc",
+      "from": {"data": "table"},
+      "encode": {
+        "enter": {
+         "x": {"field": {"group": "width"}, "mult": 0.5},
+         "y": {"field": {"group": "height"}, "mult": 0.5},
+         "startAngle": {"data": "table", "signal": "(datum.id - 1)*(6.28/(length(data('table'))/2))"},
+         "endAngle": {"data": "table", "signal": "datum.id*(6.28/(length(data('table'))/2))"},
+         "innerRadius": {"value": 20},
+         "outerRadius": {"scale": "r", "field": "y"},
+         "stroke": {"value": "#fff"}
+       },
+       "update": {
+
+
+      "fill": {"data": "table", "field":"clr"}
+      },
+      "hover": {
+        "fill": {"value": "red"}
+      }
+    }
+  },
+
+{
+    "type": "text",
+    "from": {"data": "table"},
+    "encode": {
+      "enter": {
+        "x": {"field": {"group": "width"}, "mult": 0.5},
+        "y": {"field": {"group": "height"}, "mult": 0.5},
+        "radius": {"scale": "r", "field": "y", "offset": 8},
+        "theta": {"signal": "(datum.startAngle + datum.endAngle)/2"},
+        "fill": {"value": "red"},
+        "align": {"value": "center"},
+        "baseline": {"value": "right"},
+        "text": {"field": "y"}
+      }
+    }
+  },
+  {
+    "type": "arc",
+    "from": {"data": "circles"},
+    "encode": {
+      "enter": {
+      
+        "stroke": {"value": "gray"},
+      
+        "fillOpacity":{"value": 0}
+      },
+      "update": {
+        "x": {"field": {"group": "width"}, "mult": 0.5},
+        "y": {"field": {"group": "height"}, "mult": 0.5},
+        "startAngle": {"value": 0},
+        "endAngle": {"value": 6.28},
+        "innerRadius": {"field": "innerRadius"},
+        "outerRadius": {"data": "tree", "field": "id"}
+      },
+      "hover": {
+      
+      }
+    }
+  },
+  {
+    "type": "text",
+    "from": {"data": "circles"},
+    "encode": {
+      "enter": {
+        "x": {"field": {"group": "width"}, "mult": 0.5},
+        "y": {"field": {"group": "height"}, "mult": 0.5},
+        "radius": {"scale": "xscale", "field": "id", "offset": 16},
+        
+       "theta": {"signal": "(0 + 6.29)/2"},
+        "fill": {"value": "pink"},
+        "align": {"value": "center"},
+        "baseline": {"value": "top"},
+        "text": {"field": "id"}
+        
+     }
+    }
+  }
+]
+}
